@@ -1,0 +1,69 @@
+import pandas as pd
+import numpy as np
+
+#  LOAD AND EXPLORE
+
+file_path = "data/trends_clean.csv"
+
+df = pd.read_csv(file_path)
+
+# First 5 rows
+print("First 5 rows:")
+print(df.head())
+
+# Shape
+print("\nShape (rows, columns):", df.shape)
+
+# Averages
+avg_score = df["score"].mean()
+avg_comments = df["num_comments"].mean()
+
+print("\nAverage score:", avg_score)
+print("Average num_comments:", avg_comments)
+
+
+# NUMPY ANALYSIS
+
+scores = df["score"].to_numpy()
+
+mean_score = np.mean(scores)
+median_score = np.median(scores)
+std_score = np.std(scores)
+
+print("\nScore Stats:")
+print("Mean:", mean_score)
+print("Median:", median_score)
+print("Std Dev:", std_score)
+
+print("\nHighest score:", np.max(scores))
+print("Lowest score:", np.min(scores))
+
+# Category with most stories
+top_category = df["category"].value_counts().idxmax()
+print("\nCategory with most stories:", top_category)
+
+# Story with most comments
+max_comments_row = df.loc[df["num_comments"].idxmax()]
+print("\nMost commented story:")
+print("Title:", max_comments_row["title"])
+print("Comments:", max_comments_row["num_comments"])
+
+
+# ADD NEW COLUMNS
+
+# Engagement
+df["engagement"] = df["num_comments"] / (df["score"] + 1)
+
+# Popular flag
+average_score = df["score"].mean()
+df["is_popular"] = df["score"] > average_score
+
+
+# SAVE RESULT
+
+output_path = "data/trends_analysed.csv"
+df.to_csv(output_path, index=False)
+
+print(f"\nSaved analysed data to {output_path}")
+print("Total rows:", len(df))
+
